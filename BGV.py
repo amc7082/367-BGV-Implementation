@@ -15,7 +15,8 @@ class BGV:
         self.__mod_poly = Polynomial([1] + [0]*(polynomial_modulus - 1) + [1])  # Polynomial representation of the polynomial modulus
 
     # Internal Utility Functions
-    def __coef_mod(self, polynomial: Polynomial, mod: int) -> Polynomial:
+    @staticmethod
+    def __coef_mod(polynomial: Polynomial, mod: int) -> Polynomial:
         """
         Applies a modulus to all coefficients in a given Polynomial.
         :param polynomial: Polynomial to apply mod to
