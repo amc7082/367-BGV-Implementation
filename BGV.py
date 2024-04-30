@@ -175,32 +175,35 @@ class BGV:
 
         return value
 
+def main():
+	# Encryption Parameters
+	n = 16      # Ring dimension (polynomial modulus)
+	t = 7       # plaintext modulus (coef modulus in plaintext)
+	q = 868     # ciphertext modulus (coef modulus in ciphertext)
 
-# Encryption Parameters
-n = 16      # Ring dimension (polynomial modulus)
-t = 7       # plaintext modulus (coef modulus in plaintext)
-q = 868     # ciphertext modulus (coef modulus in ciphertext)
+	# message
+	m = Polynomial([3, 2, 1] + [0]*(n-3))
 
-# message
-m = Polynomial([3, 2, 1] + [0]*(n-3))
+	bgv = BGV(n, t, q, 123)
+	s = bgv.generate_secret_key()
+	pk = bgv.generate_public_key(s)
+	ek = bgv.generate_evaluation_key(pk, s)
 
-bgv = BGV(n, t, q, 123)
-s = bgv.generate_secret_key()
-pk = bgv.generate_public_key(s)
-ek = bgv.generate_evaluation_key(pk, s)
+	enc = bgv.encrypt(m, pk)
+	add = bgv.eval_add(enc, enc)
+	mult = bgv.eval_mult(enc, enc, ek)
 
-enc = bgv.encrypt(m, pk)
-add = bgv.eval_add(enc, enc)
-mult = bgv.eval_mult(enc, enc, ek)
+	dec_m = bgv.decrypt(enc, s)
+	dec_add = bgv.decrypt(add, s)
+	dec_mult = bgv.decrypt(mult, s)
 
-dec_m = bgv.decrypt(enc, s)
-dec_add = bgv.decrypt(add, s)
-dec_mult = bgv.decrypt(mult, s)
+	print(m)
+	print("---")
+	print(dec_m)
+	print("---")
+	print(dec_add)
+	print("---")
+	print(dec_mult)
 
-print(m)
-print("---")
-print(dec_m)
-print("---")
-print(dec_add)
-print("---")
-print(dec_mult)
+if __name__ == "__main__":
+	main()
